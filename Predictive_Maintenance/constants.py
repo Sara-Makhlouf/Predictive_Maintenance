@@ -1,0 +1,15 @@
+FILE_PATH = "data.csv"
+OUTPUT_PATH = "cleaned_data.csv"
+ANOMALY_REPORT_PATH = "anomaly_report.csv"
+CLEANING_LOG_PATH = "cleaning_log.csv"
+MISSING_DROP_THRESHOLD = 0.5
+RARE_CATEGORY_THRESHOLD = 0.01
+OUTLIER_METHOD = "none"
+NUMERIC_IMPUTATION_METHOD = "median"
+KNN_NEIGHBORS = 5
+ISOLATION_FOREST_CONTAMINATION = 0.05
+SHOW_PLOTS = True
+RANDOM_STATE = 42
+ID_COLUMNS = ["udi", "product_id"]
+TARGET_COLUMNS = ["machine_failure", "twf", "hdf", "pwf", "osf", "rnf"]
+MISSING_TEXT_VALUES = ["", "nan", "none", "null", "n/a", "na", "-", "?"]

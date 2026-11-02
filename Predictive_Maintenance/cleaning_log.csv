@@ -1,0 +1,5 @@
+step,description
+1,Standardized column names and resolved duplicate names
+2,Normalized text in 2 column(s)
+3,"Shape changed from (10000, 14) to (10000, 14)"
+4,Remaining missing values: 0

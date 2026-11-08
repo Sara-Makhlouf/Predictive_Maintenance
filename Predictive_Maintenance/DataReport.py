@@ -22,23 +22,18 @@ from constants import (
 )
 
 def load_data(path):
-    suffix = str(path).lower().rsplit(".", 1)[-1]
-    if suffix == "csv":
-        try:
-            return pd.read_csv(path)
-        except UnicodeDecodeError:
-            return pd.read_csv(path, encoding="latin1")
-    if suffix in {"xlsx", "xls"}:
-        return pd.read_excel(path)
-    if suffix == "json":
-        return pd.read_json(path)
-    raise ValueError("Unsupported file format. Use CSV, XLSX, XLS, or JSON.")
-
+    suffix =str(path).lower.rsplit(".",1)[-1]
+    if suffix=="csv":
+        pd.read_csv(path)
+    elif suffix =="xsls":
+        pd.read_excel
+    elif suffix=="json":
+        pd.read_json(path)
+    raise ValueError ("The Format of File is invalid")
 def section(title):
     print("\n" + "=" * 76)
     print(f"  {title}")
     print("=" * 76)
-
 def normalize_column_names(columns):
     normalized = []
     counts = {}
@@ -50,14 +45,12 @@ def normalize_column_names(columns):
             name = f"{name}_{counts[name]}"
         normalized.append(name)
     return normalized
-
 def protected_columns(df):
     protected_names = set(ID_COLUMNS + TARGET_COLUMNS)
     return {
         col for col in df.columns
         if re.sub(r"[^\w]+", "_", str(col).strip().lower()).strip("_") in protected_names
     }
-
 def feature_numeric_columns(df):
     protected = protected_columns(df)
     cols = []

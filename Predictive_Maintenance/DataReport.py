@@ -22,14 +22,19 @@ from constants import (
 )
 
 def load_data(path):
-    suffix =str(path).lower.rsplit(".",1)[-1]
-    if suffix=="csv":
-        pd.read_csv(path)
-    elif suffix =="xsls":
-        pd.read_excel
-    elif suffix=="json":
-        pd.read_json(path)
-    raise ValueError ("The Format of File is invalid")
+    suffix = str(path).lower().rsplit(".", 1)[-1]
+
+    if suffix == "csv":
+        return pd.read_csv(path)
+
+    elif suffix == "xlsx":
+        return pd.read_excel(path)
+
+    elif suffix == "json":
+        return pd.read_json(path)
+
+    else:
+        raise ValueError("The format of file is invalid")
 def section(title):
     print("\n" + "=" * 76)
     print(f"  {title}")

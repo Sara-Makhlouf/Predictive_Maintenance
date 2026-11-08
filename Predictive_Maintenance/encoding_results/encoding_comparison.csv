@@ -1,0 +1,3 @@
+Encoding,Training Features,Testing Features,Training Memory (MB)
+One-Hot,8,8,0.5493
+Frequency,6,6,0.4272

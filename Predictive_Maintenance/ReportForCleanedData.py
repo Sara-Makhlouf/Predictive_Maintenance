@@ -107,6 +107,7 @@ def detect_outliers(data_frame):
 
 def target_distribution(data_frame, target):
     return data_frame[target].value_counts()
+
 #من هون Ai
 def target_analysis(data_frame):
     target = "machine_failure"

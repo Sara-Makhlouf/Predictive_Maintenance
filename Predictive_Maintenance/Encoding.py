@@ -4,10 +4,12 @@ import numpy as np
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
+
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_PATH = BASE_DIR / "Predictive_Maintenance" / "cleaned_data.csv"
+DATA_PATH = BASE_DIR / "cleaned_data.csv"
 OUTPUT_DIR = BASE_DIR / "encoding_results"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
@@ -24,7 +26,6 @@ FEATURES = [
 ]
 
 TARGET = "machine_failure"
-
 
 
 df = pd.read_csv(DATA_PATH)
@@ -44,7 +45,6 @@ print("\nTarget distribution:")
 print(y.value_counts())
 
 
-
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -62,7 +62,6 @@ print(y_train.value_counts(normalize=True).round(4))
 
 print("\nTesting target distribution:")
 print(y_test.value_counts(normalize=True).round(4))
-
 
 
 
@@ -111,8 +110,9 @@ print("Training shape:", X_train_onehot.shape)
 print("Testing shape:", X_test_onehot.shape)
 print(X_train_onehot.head())
 
-
-
+# ==================================================
+# 6. Frequency Encoding
+# ==================================================
 
 frequency_map = X_train["type"].value_counts(normalize=True)
 
@@ -135,8 +135,35 @@ print("Training shape:", X_train_frequency.shape)
 print("Testing shape:", X_test_frequency.shape)
 print(X_train_frequency.head())
 
+# ==================================================
+# 7. Feature Scaling
+# ==================================================
 
+scaler = StandardScaler()
 
+X_train_scaled = pd.DataFrame(
+    scaler.fit_transform(X_train_onehot),
+    columns=X_train_onehot.columns,
+    index=X_train_onehot.index
+)
+
+X_test_scaled = pd.DataFrame(
+    scaler.transform(X_test_onehot),
+    columns=X_test_onehot.columns,
+    index=X_test_onehot.index
+)
+
+print("\n# FEATURE SCALING #")
+print("Training shape:", X_train_scaled.shape)
+print("Testing shape:", X_test_scaled.shape)
+
+print("\nTraining means:")
+print(X_train_scaled.mean().round(4))
+
+print("\nTraining standard deviations:")
+print(X_train_scaled.std().round(4))
+
+# ==================================================
 
 def memory_usage_mb(data):
     return data.memory_usage(deep=True).sum() / (1024 ** 2)
@@ -164,32 +191,51 @@ print(comparison.to_string(index=False))
 
 
 def validate_encoding(train_data, test_data, name):
+
     print(f"\n# {name} VALIDATION #")
 
-    print("Training rows preserved:",
-          len(train_data) == len(X_train))
+    print(
+        "Training rows preserved:",
+        len(train_data) == len(X_train)
+    )
 
-    print("Testing rows preserved:",
-          len(test_data) == len(X_test))
+    print(
+        "Testing rows preserved:",
+        len(test_data) == len(X_test)
+    )
 
-    print("Same columns:",
-          train_data.columns.equals(test_data.columns))
+    print(
+        "Same columns:",
+        train_data.columns.equals(test_data.columns)
+    )
 
-    print("All columns numeric:",
-          all(pd.api.types.is_numeric_dtype(dtype)
-              for dtype in train_data.dtypes))
+    print(
+        "All columns numeric:",
+        all(
+            pd.api.types.is_numeric_dtype(dtype)
+            for dtype in train_data.dtypes
+        )
+    )
 
-    print("Training missing values:",
-          int(train_data.isna().sum().sum()))
+    print(
+        "Training missing values:",
+        int(train_data.isna().sum().sum())
+    )
 
-    print("Testing missing values:",
-          int(test_data.isna().sum().sum()))
+    print(
+        "Testing missing values:",
+        int(test_data.isna().sum().sum())
+    )
 
-    print("Training values finite:",
-          np.isfinite(train_data.to_numpy(dtype=float)).all())
+    print(
+        "Training values finite:",
+        np.isfinite(train_data.to_numpy(dtype=float)).all()
+    )
 
-    print("Testing values finite:",
-          np.isfinite(test_data.to_numpy(dtype=float)).all())
+    print(
+        "Testing values finite:",
+        np.isfinite(test_data.to_numpy(dtype=float)).all()
+    )
 
 
 validate_encoding(
@@ -203,6 +249,14 @@ validate_encoding(
     X_test_frequency,
     "FREQUENCY"
 )
+
+validate_encoding(
+    X_train_scaled,
+    X_test_scaled,
+    "SCALED"
+)
+
+
 
 pd.concat(
     [X_train_onehot, y_train.rename(TARGET)],
@@ -224,6 +278,16 @@ pd.concat(
     axis=1
 ).to_csv(OUTPUT_DIR / "test_frequency.csv", index=False)
 
+pd.concat(
+    [X_train_scaled, y_train.rename(TARGET)],
+    axis=1
+).to_csv(OUTPUT_DIR / "train_scaled.csv", index=False)
+
+pd.concat(
+    [X_test_scaled, y_test.rename(TARGET)],
+    axis=1
+).to_csv(OUTPUT_DIR / "test_scaled.csv", index=False)
+
 comparison.to_csv(
     OUTPUT_DIR / "encoding_comparison.csv",
     index=False
@@ -231,9 +295,8 @@ comparison.to_csv(
 
 print("\n# COMPLETED #")
 print("Encoded datasets saved in:", OUTPUT_DIR)
-# ==================================================
-# 6.1. Unseen Category Handling
-# ==================================================
+
+
 
 unseen_category = pd.DataFrame({
     "type": ["unknown"]

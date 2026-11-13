@@ -18,9 +18,6 @@ from sklearn.metrics import (
     confusion_matrix
 )
 
-# ==================================================
-# 1. Configuration
-# ==================================================
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "imbalance_results"
@@ -31,9 +28,6 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 TARGET = "machine_failure"
 RANDOM_STATE = 42
 
-# ==================================================
-# 2. Load Dataset
-# ==================================================
 
 train_df = pd.read_csv(DATA_DIR / "train_balanced.csv")
 test_df = pd.read_csv(DATA_DIR / "test_scaled.csv")
@@ -48,9 +42,6 @@ print("\n# DATA LOADING #")
 print("Training shape:", X_train.shape)
 print("Testing shape:", X_test.shape)
 
-# ==================================================
-# 3. Cross Validation
-# ==================================================
 
 cv = StratifiedKFold(
     n_splits=5,
@@ -58,9 +49,6 @@ cv = StratifiedKFold(
     random_state=RANDOM_STATE
 )
 
-# ==================================================
-# 4. Define Models and Search Spaces
-# ==================================================
 
 models = {
     "Logistic Regression": {
@@ -96,9 +84,6 @@ models = {
     }
 }
 
-# ==================================================
-# 5. Hyperparameter Tuning
-# ==================================================
 
 tuning_results = []
 best_models = {}
@@ -131,7 +116,6 @@ for name, config in models.items():
 
     print("Best CV PR-AUC:", round(search.best_score_, 4))
 
-    # Evaluate on the test set
     y_pred = best_model.predict(X_test)
     y_prob = best_model.predict_proba(X_test)[:, 1]
 
@@ -160,9 +144,6 @@ for name, config in models.items():
         OUTPUT_DIR / f"{name.lower().replace(' ', '_')}_best.pkl"
     )
 
-# ==================================================
-# 6. Save Comparison
-# ==================================================
 
 results_df = pd.DataFrame(tuning_results)
 

@@ -52,9 +52,6 @@ print("\n# DATA LOADING #")
 print("Training shape:", X_train.shape)
 print("Testing shape:", X_test.shape)
 
-# ==================================================
-# 3. Define Models
-# ==================================================
 
 models = {
     "Logistic Regression": LogisticRegression(
@@ -78,10 +75,6 @@ models = {
         weights="distance"
     )
 }
-
-# ==================================================
-# 4. Model Training and Evaluation
-# ==================================================
 
 results = []
 predictions = {}
@@ -138,7 +131,6 @@ for name, model in models.items():
     print("PR-AUC:", round(pr_auc, 4))
     print("ROC-AUC:", round(roc_auc, 4))
 
-    # Confusion Matrix
     cm = confusion_matrix(y_test, y_pred)
 
     plt.figure(figsize=(6, 5))
@@ -163,10 +155,6 @@ for name, model in models.items():
     )
     plt.close()
 
-# ==================================================
-# 5. Model Comparison
-# ==================================================
-
 results_df = pd.DataFrame(results)
 
 results_df = results_df.sort_values(
@@ -182,9 +170,6 @@ results_df.to_csv(
     index=False
 )
 
-# ==================================================
-# 6. Comparison Visualization
-# ==================================================
 
 metrics = [
     "Precision",
@@ -213,10 +198,6 @@ plt.savefig(
 )
 
 plt.close()
-
-# ==================================================
-# 7. Save Predictions
-# ==================================================
 
 predictions_df = pd.DataFrame({
     "Actual": y_test.to_numpy()

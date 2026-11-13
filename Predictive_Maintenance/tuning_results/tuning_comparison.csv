@@ -1,0 +1,4 @@
+Model,Best Parameters,CV PR-AUC,Test PR-AUC,Test ROC-AUC
+KNN,"{'weights': 'distance', 'n_neighbors': 21, 'metric': 'euclidean'}",0.9891295955205683,0.326330269476556,0.8892796248934357
+SVM,"{'gamma': 'auto', 'C': 50}",0.9860094837552238,0.5977557547799783,0.9561259286323225
+Logistic Regression,"{'solver': 'lbfgs', 'C': 10}",0.9049185295270714,0.3781407474715314,0.90595694799659

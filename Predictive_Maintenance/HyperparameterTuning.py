@@ -5,19 +5,14 @@ import numpy as np
 import joblib
 
 from sklearn.model_selection import RandomizedSearchCV, StratifiedKFold
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC
-from sklearn.calibration import CalibratedClassifierCV
-from sklearn.neighbors import KNeighborsClassifier
+
 from sklearn.metrics import (
     average_precision_score,
     roc_auc_score,
     classification_report,
     confusion_matrix
 )
-
+from fileu import models
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "imbalance_results"
@@ -49,40 +44,6 @@ cv = StratifiedKFold(
     random_state=RANDOM_STATE
 )
 
-
-models = {
-    "Logistic Regression": {
-        "estimator": LogisticRegression(
-            max_iter=3000,
-            random_state=RANDOM_STATE
-        ),
-        "params": {
-            "C": [0.01, 0.1, 1, 10, 100],
-            "solver": ["lbfgs", "liblinear"]
-        }
-    },
-
-    "SVM": {
-        "estimator": SVC(
-            kernel="rbf",
-            probability=True,
-            random_state=RANDOM_STATE
-        ),
-        "params": {
-            "C": [0.1, 1, 10, 50, 100],
-            "gamma": ["scale", "auto", 0.001, 0.01, 0.1]
-        }
-    },
-
-    "KNN": {
-        "estimator": KNeighborsClassifier(),
-        "params": {
-            "n_neighbors": [3, 5, 7, 9, 11, 15, 21],
-            "weights": ["uniform", "distance"],
-            "metric": ["euclidean", "manhattan"]
-        }
-    }
-}
 
 
 tuning_results = []
